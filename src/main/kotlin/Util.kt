@@ -25,18 +25,11 @@ object Util {
 		return lerp(low, high, Random.nextFloat())
 	}
 
-	fun scaleDown(width: Int, height: Int, desiredArea: Int): Pair<Int, Int> {
-		val w = (desiredArea / (width * height).toDouble() * width * width)
-		val h = (desiredArea / (width * height).toDouble() * height * height)
-
-		val sw = sqrt(w)
-		val sh = sqrt(h)
-
-		return sw.roundToInt() to sh.roundToInt()
+	fun areaToDims(aspect: Float, desiredArea: Int): Pair<Int, Int> {
+		return sqrt(desiredArea * aspect).roundToInt() to sqrt(desiredArea / aspect).roundToInt()
 	}
 
-	fun createSampleImage(baseImage: BufferedImage, desiredArea: Int): BufferedImage {
-		val (samplesWide, samplesTall) = scaleDown(baseImage.width, baseImage.height, desiredArea)
+	fun createSampleImage(baseImage: BufferedImage, samplesWide: Int, samplesTall: Int): BufferedImage {
 		val newBaseImage = BufferedImage(samplesWide, samplesTall, BufferedImage.TYPE_INT_ARGB)
 
 		val graphics = newBaseImage.createGraphics()

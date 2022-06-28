@@ -1,4 +1,6 @@
 
+import org.joml.Matrix3f
+import org.joml.Matrix4f
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import java.awt.geom.Point2D
@@ -6,7 +8,7 @@ import java.awt.image.BufferedImage
 import kotlin.math.*
 import kotlin.random.Random
 
-class CardPosition(val cardId: Int, val x: Double, val y: Double, val scale: Double, val rotation: Double) {
+class CardPosition(val cardId: Int, val x: Float, val y: Float, val scale: Float, val rotation: Float) {
 	fun mutateClone(baseSample: BufferedImage, mutationRate: Double, cardSet: CardSet): CardPosition {
 		val minAxis = min(baseSample.width, baseSample.height)
 		val posVariation = Util.lerp(0.0, minAxis.toDouble(), mutationRate)
@@ -26,16 +28,13 @@ class CardPosition(val cardId: Int, val x: Double, val y: Double, val scale: Dou
 		)
 	}
 
-	fun transform(cardSet: CardSet): AffineTransform {
-		val transform = AffineTransform()
-		transform.translate(x, y)
-		transform.scale(scale, scale)
-		transform.rotate(rotation)
-
-		val cardImage = sample(cardSet)
-		transform.translate(-cardImage.width / 2.0, -cardImage.height / 2.0)
-
-		return transform
+	fun transform(cardSet: CardSet): Matrix3f {
+		return Matrix3f(
+			Matrix4f()
+			.scale(scale)
+			.rotateZ(rotation)
+			.translate(x, y, 0.0f)
+		)
 	}
 
 	fun transformFull(cardSet: CardSet, baseSample: BufferedImage, baseFullImage: BufferedImage): AffineTransform {
